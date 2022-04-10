@@ -28,7 +28,7 @@ contract NFTStaking is ERC721Holder, Ownable {
     uint256 stakedTotal;
 
     address nft;
-    address rewardToken;
+    address rewardsToken;
 
     mapping(address => Staker) public stakers;
     mapping(uint256 => address) public tokenOwner;
@@ -93,6 +93,17 @@ contract NFTStaking is ERC721Holder, Ownable {
         IERC721(nft).safeTransferFrom(address(this), _user, _tokenId);
         emit Unstaked(_user, _tokenId);
         stakedTotal.sub(1);
+    }
+
+    function claimReward(address _user) external {
+        require(tokensClaimable == true, "Tokens cannot be claimed yet");
+        require(stakers[_user].balance > 0, "0 rewards yet");
+
+        stakers[_user].rewardsReleased = stakers[_user].balance.add(stakers[_user].rewardsReleased);
+        stakers[_user].balance = 0;
+        IERC20(rewardsToken).mint(_user, stakers[_user].balance);
+
+        emit RewardPaid(_user, stakers[_user].balance);
     }
 
 }
