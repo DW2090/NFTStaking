@@ -75,4 +75,24 @@ contract NFTStaking is ERC721Holder, Ownable {
         stakedTotal.add(1);
     }
 
+    function _unstake(address _user, uint256 _tokenId) internal {
+        require(tokenOwner[_tokenId] == _user, "NFT Staking System: user must be the owner of the staked nft");
+        Staker storage staker = staker[_user];
+
+        uint256 lastIndex = staker.tokenIds.length - 1;
+        uint256 lastIndexKey = staker.tokenIds[lastIndex];
+        if (staker.tokenIds.length > 0) {
+            staker.tokenIds.pop();
+        }
+        staker.tokenStakingCoolDown[_tokenId] = 0;
+        if (staker.balance == 0) {
+            delete stakers[_user];
+        }
+        delete tokenOwner[_tokenId];
+
+        IERC721(nft).safeTransferFrom(address(this), _user, _tokenId);
+        emit Unstaked(_user, _tokenId);
+        stakedTotal.sub(1);
+    }
+
 }
