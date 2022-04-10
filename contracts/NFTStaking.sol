@@ -25,6 +25,10 @@ contract NFTStaking is ERC721Holder, Ownable {
     }
 
     uint256 stakingStartTime;
+    uint256 stakedTotal;
+
+    address nft;
+    address rewardToken;
 
     mapping(address => Staker) public stakers;
     mapping(uint256 => address) public tokenOwner;
@@ -49,6 +53,26 @@ contract NFTStaking is ERC721Holder, Ownable {
 
     function getStakedTokens(address _user) external view returns (uint256[] memory tokenIds) {
         return stakers[_user].tokenIds;
+    }
+
+    function statke(uint256 tokenId) external {
+        _stake(msg.sender, tokenId);
+    }
+
+    function _stake(address _user, uint256 tokenId) internal {
+        require(initialized, "Staking System: the staking has not started");
+        require(IERC721(nft).ownerOf(_tokenId) == user, "user must be the owner of the token");
+        
+        Staker storage staker = staker[_user];
+
+        staker.tokenIds.push(_tokenId);
+        staker.tokenStakingCoolDown[_tokenId] = block.timestamp;
+        tokenOwner[_tokenId] = _user;
+        IERC721(nft).approve(address(this), _tokenId);
+        IERC721(nft).safeTransferFrom(_user, address(this), _tokenId);
+
+        emit Staked(_user, _tokenId);
+        stakedTotal.add(1);
     }
 
 }
