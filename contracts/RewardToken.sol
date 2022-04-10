@@ -1,9 +1,9 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contract/token/ERC20/ERC20.sol"
-import "@openzeppelin/contract/token/ERC20/extensions/ERC20Burnable.sol"
-import "@openzeppelin/contract/access/AccessControl.sol"
+import "@openzeppelin/contract/token/ERC20/ERC20.sol";
+import "@openzeppelin/contract/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contract/access/AccessControl.sol";
 
 import "hardhat/console.sol";
 
