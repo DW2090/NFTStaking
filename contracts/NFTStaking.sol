@@ -40,6 +40,11 @@ contract NFTStaking is ERC721Holder, Ownable {
     event RewardPaid(address indexed user, uint256 reward);
     event ClaimableStatusUpdated(bool status);
 
+    constructor(address _nft, address _rewardToken) {
+        nft = _nft;
+        rewardsToken = _rewardToken;
+    }
+
     function initStaking() external onlyOwner{
         require(!initialized, "Already initialized!");
         stakingStartTime = block.timestamp;
