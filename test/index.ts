@@ -55,4 +55,18 @@ describe("NFTStaking", function () {
       console.log(await randomNFT.ownedIDs(alice.address, 0));
     });
   });
+
+  describe("NFT staking testing", async () => {
+    it("Stake test", async () => {
+      await randomNFT.safeMint(alice.address);
+      await randomNFT.safeMint(alice.address);
+      
+      let tokenId = (await randomNFT.ownedIDs(alice.address, 0) as BigNumber).toNumber();
+      
+      await nftStaking.initStaking();
+      randomNFT.connect(alice).setApprovalForAll(nftStaking.address, true);
+      await nftStaking.connect(alice).stake(tokenId);
+
+    });
+  });
 });

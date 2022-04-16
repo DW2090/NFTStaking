@@ -61,7 +61,7 @@ contract NFTStaking is ERC721Holder, Ownable {
         return stakers[_user].tokenIds;
     }
 
-    function statke(uint256 tokenId) external {
+    function stake(uint256 tokenId) external {
         _stake(msg.sender, tokenId);
     }
 
