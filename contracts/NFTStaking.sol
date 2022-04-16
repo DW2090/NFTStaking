@@ -1,11 +1,11 @@
 //SPDX-License-Identifier: Unlicense
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contract/token/ERC20/IERC20.sol";
-import "@openzeppelin/contract/token/ERC721/IERC721.sol";
-import "@openzeppelin/contract/utils/math/SafeMath.sol";
-import "@openzeppelin/contract/access/Ownable.sol";
-import "@openzeppelin/contract/token/ERC721/utils/ERC721Holder.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 
 import "hardhat/console.sol";
 
@@ -64,11 +64,11 @@ contract NFTStaking is ERC721Holder, Ownable {
         _stake(msg.sender, tokenId);
     }
 
-    function _stake(address _user, uint256 tokenId) internal {
+    function _stake(address _user, uint256 _tokenId) internal {
         require(initialized, "Staking System: the staking has not started");
-        require(IERC721(nft).ownerOf(_tokenId) == user, "user must be the owner of the token");
+        require(IERC721(nft).ownerOf(_tokenId) == _user, "user must be the owner of the token");
         
-        Staker storage staker = staker[_user];
+        Staker storage staker = stakers[_user];
 
         staker.tokenIds.push(_tokenId);
         staker.tokenStakingCoolDown[_tokenId] = block.timestamp;
@@ -82,7 +82,7 @@ contract NFTStaking is ERC721Holder, Ownable {
 
     function _unstake(address _user, uint256 _tokenId) internal {
         require(tokenOwner[_tokenId] == _user, "NFT Staking System: user must be the owner of the staked nft");
-        Staker storage staker = staker[_user];
+        Staker storage staker = stakers[_user];
 
         uint256 lastIndex = staker.tokenIds.length - 1;
         uint256 lastIndexKey = staker.tokenIds[lastIndex];
@@ -106,7 +106,7 @@ contract NFTStaking is ERC721Holder, Ownable {
 
         stakers[_user].rewardsReleased = stakers[_user].balance.add(stakers[_user].rewardsReleased);
         stakers[_user].balance = 0;
-        IERC20(rewardsToken).mint(_user, stakers[_user].balance);
+        IRewardToken(rewardsToken).mint(_user, stakers[_user].balance);
 
         emit RewardPaid(_user, stakers[_user].balance);
     }
