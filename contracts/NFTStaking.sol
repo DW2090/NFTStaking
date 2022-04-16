@@ -41,6 +41,7 @@ contract NFTStaking is ERC721Holder, Ownable {
     event ClaimableStatusUpdated(bool status);
 
     constructor(address _nft, address _rewardToken) {
+        require(_nft != address(0x00) && _rewardToken != address(0x00), "InValid Address");
         nft = _nft;
         rewardsToken = _rewardToken;
     }

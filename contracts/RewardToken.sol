@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 import "hardhat/console.sol";
 
-contract RandomNFT is ERC20, ERC20Burnable, AccessControl {
+contract RewardToken is ERC20, ERC20Burnable, AccessControl {
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor() ERC20("Reward Token", "RWT") {

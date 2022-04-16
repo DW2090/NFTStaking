@@ -6,11 +6,12 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "hardhat/console.sol";
 
-contract RandomNFT is ERC721, ERC721Burnable, AccessControl {
+contract RandomNFT is ERC721Burnable, AccessControl {
     using Counters for Counters.Counter;
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    Counters.Counter private _tokenIdCounter;
+    Counters.Counter public _tokenIdCounter;
+    mapping(address => uint256[]) public ownedIDs;
 
     constructor() ERC721("Random NFT", "RDN") {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
@@ -25,6 +26,8 @@ contract RandomNFT is ERC721, ERC721Burnable, AccessControl {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
+        uint256[] storage ids = ownedIDs[to];
+        ids.push(tokenId);
     }
 
     function supportsInterface(bytes4 interfaceId) public view override(ERC721, AccessControl) returns (bool) {
